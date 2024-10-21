@@ -1,0 +1,42 @@
+services:
+  master_db:
+    image: postgres:14
+    container_name: master_db
+    environment:
+      POSTGRES_USER: master
+      POSTGRES_PASSWORD: masterpassword
+      POSTGRES_DB: master_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - master_data:/var/lib/postgresql/data
+    networks:
+      - db_network
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    #image: bitnami/pgbouncer:1.23.1
+    environment:
+      DATABASE_URL: "postgresql://master:masterpassword@master_db:5432/master_db"
+      PGBOUNCER_ADMIN_USER: "admin"
+      PGBOUNCER_ADMIN_PASSWORD: "adminpassword"
+      PGBOUNCER_POOL_MODE: "transaction"
+    ports:
+      - "6432:6432"
+    volumes:
+      - ./pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./userlist.txt:/etc/pgbouncer/userlist.txt
+    networks:
+      - db_network
+    depends_on:
+      - master_db
+      # - replica1_db
+      # - replica2_db
+
+volumes:
+  master_data:
+  # replica1_data:
+  # replica2_data:
+
+networks:
+  db_network:

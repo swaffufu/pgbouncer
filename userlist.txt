@@ -1,0 +1,3 @@
+"master" "masterpassword"
+"replica1" "replica1password"
+"replica2" "replica2password"
