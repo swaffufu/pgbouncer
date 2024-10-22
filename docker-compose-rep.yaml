@@ -3,26 +3,31 @@ services:
     build:
       context: .
       dockerfile: dockerfile
-    #image: postgres:14
     container_name: replica1_db
-    ports:
-      - "5433:5432"
-    # volumes:
-    #   - replica1_data:/var/lib/postgresql/data
     networks:
       - db_network
+
   replica2_db:
     build:
       context: .
       dockerfile: dockerfile
-    #image: postgres:14
     container_name: replica2_db
-    ports:
-      - "5434:5432"
-    # volumes:
-    #   - replica2_data:/var/lib/postgresql/data
     networks:
       - db_network
 
+  haproxy:
+    image: haproxy:latest
+    container_name: haproxy
+    ports:
+      - "8404:8404"
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    networks:
+      - db_network
+    depends_on:
+      - replica1_db
+      - replica2_db
+
 networks:
   db_network:
+    external: true

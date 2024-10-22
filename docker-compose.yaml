@@ -15,9 +15,9 @@ services:
 
   pgbouncer:
     image: edoburu/pgbouncer
-    #image: bitnami/pgbouncer:1.23.1
+    container_name: pgbouncer
     environment:
-      DATABASE_URL: "postgresql://master:masterpassword@master_db:5432/master_db"
+      DATABASE_URL: "postgresql://master:masterpassword@haproxy:5003/master_db"
       PGBOUNCER_ADMIN_USER: "admin"
       PGBOUNCER_ADMIN_PASSWORD: "adminpassword"
       PGBOUNCER_POOL_MODE: "transaction"
@@ -28,15 +28,10 @@ services:
       - ./userlist.txt:/etc/pgbouncer/userlist.txt
     networks:
       - db_network
-    depends_on:
-      - master_db
-      # - replica1_db
-      # - replica2_db
 
 volumes:
   master_data:
-  # replica1_data:
-  # replica2_data:
 
 networks:
   db_network:
+    external: true
