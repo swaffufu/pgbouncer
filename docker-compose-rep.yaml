@@ -15,6 +15,30 @@ services:
     networks:
       - db_network
 
+  replica3_db:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: replica3_db
+    networks:
+      - db_network
+
+  replica4_db:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: replica4_db
+    networks:
+      - db_network
+
+  replica5_db:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: replica5_db
+    networks:
+      - db_network
+      
   haproxy:
     image: haproxy:latest
     container_name: haproxy
